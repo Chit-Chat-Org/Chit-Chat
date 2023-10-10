@@ -27,7 +27,7 @@ exports.uploadToAWS = async (req, res) => {
     s3Bucket.putObject(
       {
         Bucket: BUCKET_NAME,
-        Key: "/upload" + file.name,
+        Key: "uploads/" + file.name,
         Body: file.data,
         ContentType: file.mimetype,
       },
@@ -110,7 +110,6 @@ exports.getAllOrg = async (req, res) => {
 exports.addNewtrainingModel = async (req,res) =>{
   try {
     const newAITrainingModel = {
-      organizationId: req.body.organization.organizationId,
       organizationName: req.body.organization.organizationName,
       uploadKnowledge: req.body.url,
       embeddedKnowlege: "",
@@ -129,10 +128,9 @@ exports.addNewtrainingModel = async (req,res) =>{
   
     newAITrainingModel.embeddedKnowlege = embeddedFileData.embededFileLocation;
   
-    const {organizationId, organizationName, embeddedKnowlege} = newAITrainingModel;
+    const {organizationName, embeddedKnowlege} = newAITrainingModel;
   
     newAITrainingModel.originalAPIKey = generateApiKey({
-      organizationId,
       organizationName,
       embeddedKnowlege,
     });

@@ -5,9 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start:local":"nodemon index.js"
+    "dev": "nodemon index.js"
   },
-  "keywords": ["ChatBot", "API", "Embedding"],
+  "keywords": [
+    "ChatBot",
+    "API",
+    "Embedding"
+  ],
   "author": "Apurv Jha",
   "license": "MIT",
   "dependencies": {
@@ -19,7 +23,8 @@
     "express": "^4.18.2",
     "express-fileupload": "^1.4.1",
     "fs": "^0.0.1-security",
-    "mongoose": "^7.5.3"
+    "mongoose": "^7.5.3",
+    "openai": "^3.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
