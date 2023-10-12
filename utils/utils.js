@@ -63,8 +63,18 @@ exports.uploadToAWS = async (req, res) => {
 
 exports.CreateNewOrg = async (req, res) => {
   try {
-    
+    const userId = req.body.userId;
+
+    if (!userId) {
+      return res.json({
+        status: "Failed",
+        response: {},
+        error: "Not Authenticated !",
+      });
+    }
+
     const newOrganization = await OrganizationModel.create({
+        userId: userId,
         OrganizationName: req.body.OrganizationName,
         OrganizationWebsite: req.body.OrganizationWebsite,
         organizationEmail: req.body.organizationEmail,
@@ -88,6 +98,7 @@ exports.CreateNewOrg = async (req, res) => {
   }
 };
 
+
 exports.getAllOrg = async (req, res) => {
     try {
         const allOrg = await OrganizationModel.find();
@@ -107,9 +118,62 @@ exports.getAllOrg = async (req, res) => {
     }
 }
 
+exports.getOrganizationById = async (req, res) => {
+  try {
+      // Extract userId from query parameter instead of cookies
+const userIdFromQuery = req.query.UserId;
+console.log(req.query);
+
+if (!userIdFromQuery) {
+    return res.json({
+        status: "Failed",
+        response: {},
+        error: "UserId query parameter not found",
+    });
+}
+
+const organization = await OrganizationModel.find({ userId: userIdFromQuery });
+
+if (!organization) {
+    return res.json({
+        status: "Failed",
+        response: {},
+        error: "Organization not found for given user ID",
+    });
+}
+
+res.json({
+    status: "Success",
+    response: {
+        data: organization
+    }
+});
+
+  } catch (error) {
+      console.log("Error:", error);
+      res.json({
+          status: "Failed",
+          response: {},
+          error: error.message
+      });
+  }
+};
+
+
 exports.addNewtrainingModel = async (req,res) =>{
   try {
+    const userId = req.body.organization.userId;
+
+    if (!userId) {
+      return res.json({
+        status: "Failed",
+        response: {},
+        error: "Not Authenticated !",
+      });
+    }
+
     const newAITrainingModel = {
+      userId: userId,
       organizationName: req.body.organization.organizationName,
       uploadKnowledge: req.body.url,
       embeddedKnowlege: "",
@@ -156,6 +220,46 @@ exports.addNewtrainingModel = async (req,res) =>{
     });
   }
 }
+
+exports.getAiModelById = async (req, res) => {
+  try {
+    const userIdFromQuery = req.query.UserId;
+    console.log(req.query);
+    
+    if (!userIdFromQuery) {
+        return res.json({
+            status: "Failed",
+            response: {},
+            error: "UserId query parameter not found",
+        });
+    }
+
+      const aiModel = await AiTrainingModel.find({ userId: userIdFromQuery });
+
+      if (!aiModel) {
+          return res.json({
+              status: "Failed",
+              response: {},
+              error: "AI Model not found for given user ID",
+          });
+      }
+
+      res.json({
+          status: "Success",
+          response: {
+              data: aiModel
+          }
+      });
+  } catch (error) {
+      console.log("Error:", error);
+      res.json({
+          status: "Failed",
+          response: {},
+          error: error.message
+      });
+  }
+};
+
 
 const getKnowledgeData = (source) => {
   const params = {
