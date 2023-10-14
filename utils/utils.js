@@ -1,5 +1,4 @@
 const { s3Bucket, BUCKET_NAME } = require("../config/aws.config");
-const fs = require('fs')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 
@@ -7,7 +6,7 @@ const OrganizationModel = require("../models/org.model");
 
 const AiTrainingModel = require('../models/train.model')
 
-const openai = require('../config/openai.config')
+const { Configuration, OpenAIApi } = require("openai");
 
 const secretKey = process.env.CRYPTO_SECRET
 
@@ -176,18 +175,26 @@ exports.addNewtrainingModel = async (req,res) =>{
       userId: userId,
       organizationName: req.body.organization.organizationName,
       uploadKnowledge: req.body.url,
+      openAIApi:req.body.openAIApi,
       embeddedKnowlege: "",
       apiKey: "",
       originalAPIKey: "",
     };
-  
+
+    //open ai instance defined 
+
+    const configuration = new Configuration({
+      apiKey: newAITrainingModel.openAIApi,
+    });
+    const openai = new OpenAIApi(configuration);
+
     const fileName = newAITrainingModel.uploadKnowledge.substring(
       newAITrainingModel.uploadKnowledge.lastIndexOf("/") + 1
     );
     
     const knowledgeSource = await getKnowledgeData(`uploads/${fileName}`);
     
-    const embeddedFileData = await createEmbedding(fileName,knowledgeSource)
+    const embeddedFileData = await createEmbedding(fileName,knowledgeSource,openai)
   
   
     newAITrainingModel.embeddedKnowlege = embeddedFileData.embededFileLocation;
@@ -281,7 +288,7 @@ const getKnowledgeData = (source) => {
   });
 }
 
-async function createEmbedding(fileName, knowledgeSource ){
+async function createEmbedding(fileName, knowledgeSource, openai ){
 
   let text = knowledgeSource;
   let embeddingStore = {}
@@ -407,6 +414,11 @@ exports.QnARetrieval  = async (req, res) => {
       let embeddedQuestion;
   
       try {
+        const configuration = new Configuration({
+          apiKey: data.openAIApi,
+        });
+        const openai = new OpenAIApi(configuration);
+
         const fileName = extractFileNamewithExt(data.embeddedKnowlege);
         const embeddingStoreJSON = await getKnowledgeData(`embedding/${fileName}`);
   

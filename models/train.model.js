@@ -21,6 +21,10 @@ const trainModel = new mongoose.Schema({
     type: String,
     required: true,
   },
+  openAIApi:{
+    type: String,
+    required:true
+  },
   originalAPIKey: {
     type: String,
     required: true,
