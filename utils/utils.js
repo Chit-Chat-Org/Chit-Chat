@@ -121,7 +121,6 @@ exports.getOrganizationById = async (req, res) => {
   try {
       // Extract userId from query parameter instead of cookies
 const userIdFromQuery = req.query.UserId;
-console.log(req.query);
 
 if (!userIdFromQuery) {
     return res.json({
@@ -231,7 +230,6 @@ exports.addNewtrainingModel = async (req,res) =>{
 exports.getAiModelById = async (req, res) => {
   try {
     const userIdFromQuery = req.query.UserId;
-    console.log(req.query);
     
     if (!userIdFromQuery) {
         return res.json({
