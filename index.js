@@ -14,7 +14,7 @@ app.use(cookieParser());
 // MongoDB Connection
 
 app.use(cors({
-  origin: 'https://chit-chat.tech',
+  origin: true,
   credentials: true 
 }))
 app.use(express.json())
