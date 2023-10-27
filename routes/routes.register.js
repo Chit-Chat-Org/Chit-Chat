@@ -73,6 +73,7 @@ router.post("/login", async (req, res) => {
     res
       .cookie("UserId", id,{
         expires: new Date(Date.now() + 25892000000),
+        secure: true
       })
       .json({
         status: "Success",
