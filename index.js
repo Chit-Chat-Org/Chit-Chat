@@ -13,7 +13,10 @@ app.use(cookieParser());
 
 // MongoDB Connection
 
-app.use(cors())
+app.use(cors({
+  origin: 'https://chit-chat.tech',
+  credentials: true 
+}))
 app.use(express.json())
 app.use(fileUpload())
 

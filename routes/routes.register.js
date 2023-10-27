@@ -19,7 +19,7 @@ router.post("/signup", async (req, res) => {
       res
         .cookie("UserId", register._id.toString(), {
           expires: new Date(Date.now() + 25892000000),
-          httpOnly: true,
+          secure:true
         })
         .json({
           status: "Success",
@@ -71,8 +71,8 @@ router.post("/login", async (req, res) => {
     const id = findUser._id.toString();
 
     res
-      .cookie("UserId", id, {
-        httpOnly:true
+      .cookie("UserId", id,{
+        expires: new Date(Date.now() + 25892000000),
       })
       .json({
         status: "Success",

@@ -3,7 +3,10 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
 #### Chit-Chat allows you to quickly integrate a chatbot into your application by simply uploading a configuration file. This bot uses the power of OpenAI's API to generate responses. By using our provided CDN and API endpoint, you can get started in just a few minutes.
-
+## Docker
+```javascript
+docker pull apurvjha123/chit-chat
+```
 ## 🚀 How to Integrate
 ### 1. 🎨 CDN Integration
 **Step 1:** Add the provided CSS and JS CDN to your project.
