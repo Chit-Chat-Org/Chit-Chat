@@ -1,0 +1,14 @@
+{
+  "/_not-found": "app/_not-found.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/addAIData/page": "app/addAIData/page.js",
+  "/login/page": "app/login/page.js",
+  "/docs/page": "app/docs/page.js",
+  "/organization/page": "app/organization/page.js",
+  "/sign-up/page": "app/sign-up/page.js",
+  "/trychatbot/page": "app/trychatbot/page.js",
+  "/docs/cdn/page": "app/docs/cdn/page.js",
+  "/dashboard/page": "app/dashboard/page.js"
+}
