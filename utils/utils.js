@@ -6,7 +6,7 @@ const OrganizationModel = require("../models/org.model");
 
 const AiTrainingModel = require("../models/train.model");
 
-const { Configuration, OpenAIApi } = require("openai");
+const { OpenAI } = require("openai");
 
 const pdf = require('pdf-parse');
 const Papa = require('papaparse');
@@ -200,10 +200,10 @@ exports.addNewtrainingModel = async (req, res) => {
 
     //open ai instance defined
 
-    const configuration = new Configuration({
-      apiKey: newAITrainingModel.openAIApi,
-    });
-    const openai = new OpenAIApi(configuration);
+    // const configuration = new Configuration({
+    //   apiKey: newAITrainingModel.openAIApi,
+    // });
+    const openai = new OpenAI({apiKey: newAITrainingModel.openAIApi})
 
     const fileName = newAITrainingModel.uploadKnowledge.substring(
       newAITrainingModel.uploadKnowledge.lastIndexOf("/") + 1
@@ -326,14 +326,14 @@ async function createEmbedding(fileName, knowledgeSource, openai) {
   const date = new Date().getTime();
 
   try {
-    const response = await openai.createEmbedding({
+    const response = await openai.embeddings.create({
       input: paras,
       model: "text-embedding-ada-002",
     });
-    if (response.data.data.length >= paraLen) {
+    if (response.data.length >= paraLen) {
       for (let i = 0; i < paraLen; i++) {
         embeddingStore["embeds:" + paras[i]] = JSON.stringify({
-          embedding: response.data.data[i].embedding,
+          embedding: response.data[i].embedding,
           created: date,
         });
       }
@@ -433,32 +433,28 @@ exports.QnARetrieval = async (req, res) => {
     let embeddedQuestion;
 
     try {
-      const configuration = new Configuration({
-        apiKey: data.openAIApi,
-      });
-      const openai = new OpenAIApi(configuration);
-
+      const openai = new OpenAI({apiKey: data.openAIApi});
       const fileName = extractFileNamewithExt(data.embeddedKnowlege);
       const embeddingStoreJSON = await getKnowledgeData(
         `embedding/${fileName}`
       );
-
+      
       embeddingStore = JSON.parse(embeddingStoreJSON);
 
-      let embeddedQuestionResponse = await openai.createEmbedding({
+      let embeddedQuestionResponse = await openai.embeddings.create({
         input: req.body.prompt,
         model: "text-embedding-ada-002",
       });
 
-      if (embeddedQuestionResponse.data.data.length) {
-        embeddedQuestion = embeddedQuestionResponse.data.data[0].embedding;
+      if (embeddedQuestionResponse.data.length) {
+        embeddedQuestion = embeddedQuestionResponse.data[0].embedding;
       } else {
         throw Error("Question not embedded properly");
       }
       let closestParagraphs = findClosestParagraphs(embeddedQuestion, 5);
 
       console.log("closest para", closestParagraphs);
-      let completionData = await openai.createChatCompletion({
+      let completionData = await openai.chat.completions.create({
         model: "gpt-3.5-turbo-16k",
         messages: [
           {
@@ -469,16 +465,16 @@ exports.QnARetrieval = async (req, res) => {
         temperature: 0,
       });
 
-      if (!completionData.data.choices) {
+      if (!completionData.choices) {
         throw new Error("No answer gotten");
       }
 
-      console.log(completionData.data.choices[0].message.content.trim());
-      completionData.data.choices[0].message.content.trim();
+      console.log(completionData.choices[0].message.content);
+      completionData.choices[0].message.content.trim();
 
       return res.json({
         status: "success",
-        message: completionData.data.choices[0].message.content.trim(),
+        message: completionData.choices[0].message.content.trim(),
       });
     } catch (error) {
       console.log(error);
