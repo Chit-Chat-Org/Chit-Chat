@@ -5,7 +5,7 @@ const notificationAlert = new Audio(
 window.chatbot.chatbotTitle = "AI Chatbot";
 window.chatbot.initialMessage = "Hello! How can i assist you today ?";
 window.chatbot.brandImage =
-  "https://www.kindpng.com/imgv/iixwobi_chatbots-builder-pricing-crozdesk-free-chatbot-hd-png/";
+  "https://e7.pngegg.com/pngimages/498/917/png-clipart-computer-icons-desktop-chatbot-icon-blue-angle-thumbnail.png";
 window.chatbot.switchAPI = false;
 
 const listenEventChanges = function () {
