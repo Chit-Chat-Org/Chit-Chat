@@ -12,6 +12,28 @@ const pdf = require('pdf-parse');
 const Papa = require('papaparse');
 
 const secretKey = process.env.CRYPTO_SECRET;
+// Redis
+const Redis = require('ioredis');
+const util = require('util');
+const redis = new Redis(process.env.REDISS_URI);
+
+// Promisify Redis functions
+const getAsync = util.promisify(redis.get).bind(redis);
+const setAsync = util.promisify(redis.set).bind(redis);
+// const redis = require('redis');
+// const util = require('util');
+// const client = redis.createClient({
+//   password: 'tIWFLP2TRT3yKvQ84DkwUn4lUSwPQLI4',
+//     socket: {
+//         host: 'redis-11865.c14.us-east-1-2.ec2.cloud.redislabs.com',
+//         port: 11865
+//     }
+// });
+
+// Promisify Redis functions
+// const getAsync = util.promisify(client.get).bind(client);
+// const setAsync = util.promisify(client.set).bind(client);
+
 
 let embeddingStore = {};
 
@@ -408,6 +430,17 @@ exports.getAiTrainedModel = async (req, res) => {
 };
 
 exports.QnARetrieval = async (req, res) => {
+  const redisKey = `QnARetrieval:${req.query.key}:${req.body.prompt}`;
+
+  // Check if the data is already cached in Redis
+  const cachedData = await getAsync(redisKey);
+  if (cachedData) {
+    return res.json({
+      status: "success",
+      message: cachedData,
+    });
+  }
+
   const data = await AiTrainingModel.findOne({ apiKey: req.query.key });
 
   if (!data) {
@@ -433,12 +466,12 @@ exports.QnARetrieval = async (req, res) => {
     let embeddedQuestion;
 
     try {
-      const openai = new OpenAI({apiKey: data.openAIApi});
+      const openai = new OpenAI({ apiKey: data.openAIApi });
       const fileName = extractFileNamewithExt(data.embeddedKnowlege);
       const embeddingStoreJSON = await getKnowledgeData(
         `embedding/${fileName}`
       );
-      
+
       embeddingStore = JSON.parse(embeddingStoreJSON);
 
       let embeddedQuestionResponse = await openai.embeddings.create({
@@ -469,12 +502,14 @@ exports.QnARetrieval = async (req, res) => {
         throw new Error("No answer gotten");
       }
 
-      console.log(completionData.choices[0].message.content);
-      completionData.choices[0].message.content.trim();
+      const responseData = completionData.choices[0].message.content.trim();
+
+      // Cache the data in Redis
+      await setAsync(redisKey, responseData);
 
       return res.json({
         status: "success",
-        message: completionData.choices[0].message.content.trim(),
+        message: responseData,
       });
     } catch (error) {
       console.log(error);
