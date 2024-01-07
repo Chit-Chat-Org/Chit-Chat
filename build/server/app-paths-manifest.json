@@ -1,9 +1,0 @@
-{
-  "/not-found": "app/not-found.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/addAIData/page": "app/addAIData/page.js",
-  "/trychatbot/page": "app/trychatbot/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/organization/page": "app/organization/page.js",
-  "/login/page": "app/login/page.js"
-}
