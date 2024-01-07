@@ -159,8 +159,8 @@ exports.getAllOrg = async (req, res) => {
 exports.getOrganizationById = async (req, res) => {
   try {
     // Extract userId from query parameter instead of cookies
-    // const userIdFromQuery = req.query.UserId;
-    const userIdFromQuery = req.cookies.UserId;
+    const userIdFromQuery = req.query.UserId;
+    // const userIdFromQuery = req.cookies.UserId;
 
     if (!userIdFromQuery) {
       return res.json({
@@ -275,7 +275,8 @@ exports.addNewtrainingModel = async (req, res) => {
 
 exports.getAiModelById = async (req, res) => {
   try {
-    const userIdFromQuery = req.cookies.UserId;
+    const userIdFromQuery = req.query.UserId;
+    // const userIdFromQuery = req.cookies.UserId;
     if (!userIdFromQuery) {
       return res.json({
         status: "Failed",
