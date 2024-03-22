@@ -13,7 +13,12 @@ const register = new mongoose.Schema({
     },
     Password:{
         type:String,
-        required:true
+        required: true
+    },
+    avatar:{
+        type: String,
+        default : "https://www.google.com/url?sa=i&url=https%3A%2F%2Faui.atlassian.com%2Faui%2Flatest%2Fdocs%2Favatars.html&psig=AOvVaw0XktEIuKsy-Ho9AdmRSSRa&ust=1711219599508000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCJCjhfTDiIUDFQAAAAAdAAAAABAE"
+
     }
 })
 

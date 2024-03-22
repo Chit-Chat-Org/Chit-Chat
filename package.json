@@ -2,6 +2,7 @@
   "name": "chatbot-server",
   "version": "1.0.0",
   "description": "A backend for ChatBot",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -3,6 +3,7 @@ const user = require("../models/register.modal");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 
+
 router.post("/signup", async (req, res) => {
   try {
     const HashedPassword = await bcrypt.hash(req.body.Password, 10);
@@ -88,5 +89,56 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+router.post("/google", async(req, res) => {
+      try {
+        const user = await user.findOne({UserEmail:req.body.UserEmail})
+        if(user){
+          const id = user._id.toString();
+
+    res
+      .cookie("UserId", id,{
+        expires: new Date(Date.now() + 25892000000)
+      })
+      .json({
+        status: "Success",
+        response: {
+          data: findUser,
+        },
+      });
+        }else{
+          const generatePassword = Math.random().toString(36).slice(-8);
+          const hashedPassword = bcrypt.hashSync(generatePassword,10);
+          const newUser = new user({
+            UserName : req.body.UserName,
+            UserEmail : req.body.UserEmail,
+            Password: hashedPassword,
+            avatar : req.body.imageURL
+          })
+          await newUser.save();
+          const id = newUser._id.toString();
+
+    res
+      .cookie("UserId", id,{
+        expires: new Date(Date.now() + 25892000000)
+      })
+      .json({
+        status: "Success",
+        response: {
+          data: findUser,
+        },
+      });
+        }
+        
+      } catch (error) {
+        console.log("Error:", error);
+    res.json({
+      status: "Failed",
+      response: {},
+      error: error.message,
+    });
+        
+      }
+})
 
 module.exports = router;
