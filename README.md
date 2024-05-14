@@ -3,6 +3,11 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
 #### Chit-Chat allows you to quickly integrate a chatbot No code into your application by simply uploading a configuration file. This bot uses the power of OpenAI's API to generate responses. By using our provided CDN and API endpoint, you can get started in just a few minutes.
+
+
+## Project Demo
+[![Alt text](https://img.youtube.com/vi/MnmEB7ZGAXU/0.jpg)](https://www.youtube.com/watch?v=MnmEB7ZGAXU)
+
 ## Docker
 ```javascript
 docker pull apurvjha123/chit-chat
