@@ -18,7 +18,7 @@
 4. **Add a remote upstream:**
    Set up a remote upstream to the original repository by running the following command in your terminal:
   ```bash
-    git remote add upstream https://github.com/<original-owner>/Flipkart_Clone/
+    git remote add upstream https://github.com/<original-owner>/Chit-Chat/
   ```
 
 5. **Create a new branch:**
