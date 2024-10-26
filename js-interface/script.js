@@ -3,6 +3,7 @@ const notificationAlert = new Audio(
   "https://cdn.jsdelivr.net/gh/apurvjha123/Chit-Chat-Server/Sound/message-notification.mp3"
 );
 window.chatbot.chatbotTitle = "AI Chatbot";
+window.chatbot.LLM = "Gemini";
 window.chatbot.initialMessage = "Hello! How can i assist you today ?";
 window.chatbot.brandImage =
   "https://e7.pngegg.com/pngimages/498/917/png-clipart-computer-icons-desktop-chatbot-icon-blue-angle-thumbnail.png";
@@ -441,15 +442,16 @@ function playNotificationSound() {
 
 async function generateAnswares(userQuestion) {
   try {
-    let chatAPIUrl = `https://chit-chat.tech/api/v1/QnARetrieval?key=${chatbot.apiKey}`;
+    let chatAPIUrl = `https://chit-chat.fun/api/v0.1/QnARetrieval?key=${chatbot.apiKey}`;
 
     // if you want to switch to different API url then use this
     if (chatbot.switchAPI) {
-      chatAPIUrl = `https://your-hosted-domain/api/v1/organization/generateCompletion?key=${chatbot.apiKey}`;
+      chatAPIUrl = `https://your-hosted-domain/api/v0.1/organization/generateCompletion?key=${chatbot.apiKey}`;
     }
 
     const payloadBody = {
       prompt: userQuestion,
+      llm: chatbot.LLM
     };
 
     const response = await fetch(chatAPIUrl, {
@@ -500,6 +502,7 @@ function loadListOfSuggestions() {
 function setChatBotConfiguration({
   apiKey,
   chatbotTitle,
+  LLM,
   initialMessage,
   brandImage,
   suggestions,
@@ -507,6 +510,7 @@ function setChatBotConfiguration({
 }) {
   window.chatbot.apiKey = apiKey || chatbot.apiKey;
   window.chatbot.chatbotTitle = chatbotTitle || chatbot.chatbotTitle;
+  window.chatbot.LLM = LLM || chatbot.LLM;
   window.chatbot.initialMessage = initialMessage || chatbot.initialMessage;
   window.chatbot.brandImage = brandImage || chatbot.brandImage;
   window.chatbot.suggestions = suggestions || null;
