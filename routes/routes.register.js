@@ -5,36 +5,40 @@ const bcrypt = require("bcrypt");
 
 router.post("/signup", async (req, res) => {
   try {
-    const HashedPassword = await bcrypt.hash(req.body.Password, 10);
-    const findUser = await user.findOne({ UserName: req.body.UserName });
-    let register;
+    const { UserName, UserEmail, Password, ExternalId } = req.body;
 
-    if (!findUser) {
-      register = await user.create({
-        UserName: req.body.UserName,
-        UserEmail: req.body.UserEmail,
-        Password: HashedPassword,
-      });
-
-      res
-        .cookie("UserId", register._id.toString(), {
-          expires: new Date(Date.now() + 25892000000)
-        })
-        .json({
-          status: "Success",
-          response: {
-            data: register._id,
-          },
-        });
-    } else {
+    // Check if user already exists
+    const findUser = await user.findOne({ _id: ExternalId });
+    if (findUser) {
       return res.json({
         status: "User Already Exist!",
         response: {},
         error: "User already exists.",
       });
     }
+
+    // Handle password hashing if provided
+    let HashedPassword = null;
+    if (Password) {
+      HashedPassword = await bcrypt.hash(Password, 10);
+    }
+
+    const register = await user.create({
+      _id: ExternalId, 
+      UserName,
+      UserEmail,
+      Password: HashedPassword,
+    });
+
+    // Send response with a cookie
+    res.json({
+        status: "Success",
+        response: {
+          data: register._id,
+        },
+      });
   } catch (error) {
-    console.log("Error:", error);
+    console.error("Error:", error);
     res.json({
       status: "Failed",
       response: {},
@@ -45,8 +49,9 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const findUser = await user.findOne({ UserName: req.body.UserName });
+    const { ExternalId } = req.body;
 
+    const findUser = await user.findOne({ _id: ExternalId });
     if (!findUser) {
       return res.json({
         status: "Failed",
@@ -55,32 +60,15 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const validPassword = await bcrypt.compare(
-      req.body.Password,
-      findUser.Password
-    );
-    if (!validPassword) {
       return res.json({
-        status: "Failed",
-        response: {},
-        error: "Incorrect password.",
-      });
-    }
+          status: "Success",
+          response: {
+            data: findUser._id,
+          },
+        });
 
-    const id = findUser._id.toString();
-
-    res
-      .cookie("UserId", id,{
-        expires: new Date(Date.now() + 25892000000)
-      })
-      .json({
-        status: "Success",
-        response: {
-          data: findUser,
-        },
-      });
   } catch (error) {
-    console.log("Error:", error);
+    console.error("Error:", error);
     res.json({
       status: "Failed",
       response: {},
@@ -88,5 +76,7 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+
 
 module.exports = router;
