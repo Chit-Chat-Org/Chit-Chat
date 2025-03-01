@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 
 const Organization = new mongoose.Schema({
-    userId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'register'
-    },
+    userId: { type: String, required: true },
     OrganizationName:{
         type : String,
         requireq: true
